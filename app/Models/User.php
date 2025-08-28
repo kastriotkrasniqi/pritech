@@ -34,6 +34,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * Get the attributes that should be cast.
      *
@@ -57,5 +58,17 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    // Projects owned by this user
+    public function ownedProjects()
+    {
+        return $this->hasMany(Project::class, 'user_id');
+    }
+
+    // Issues assigned to this user
+    public function assignedIssues()
+    {
+        return $this->belongsToMany(Issue::class, 'issue_user');
     }
 }
