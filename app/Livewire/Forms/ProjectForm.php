@@ -16,6 +16,6 @@ class ProjectForm extends Form
     public $user_id;
     #[Validate(['date'])]
     public $start_date;
-    #[Validate([ 'date'])]
+    #[Validate(['date', 'after_or_equal:start_date'])]
     public $deadline;
 }

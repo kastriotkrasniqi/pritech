@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Projects\Table;
+use App\Livewire\Projects\ShowProject;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -13,6 +14,10 @@ Route::get('/', function () {
 Route::get('/projects',function(){
     return view('projects.index');
 })->name('projects.index');
+
+Route::get('/projects/{id}', function($id) {
+    return view('projects.show', ['id' => $id]);
+})->name('projects.show');
 
 
 Route::view('dashboard', 'dashboard')

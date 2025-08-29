@@ -31,7 +31,11 @@
             <flux:table.rows>
                 @foreach ($this->projects as $project)
                 <flux:table.row :key="$project->id" class="even:bg-gray-50 dark:even:bg-gray-700/30">
-                    <flux:table.cell>{{ $project->name }}</flux:table.cell>
+                    <flux:table.cell>
+                        <a href="{{ route('projects.show', $project->id) }}" wire:navigate class="font-medium hover:underline">
+                            {{ $project->name }}
+                        </a>
+                    </flux:table.cell>
                     <flux:table.cell>{{ str()->limit($project->description, 30) }}</flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">{{ $project->created_at->format('Y-m-d') }}
                     </flux:table.cell>
@@ -42,12 +46,13 @@
                             <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
                             </flux:button>
                             <flux:menu>
-                                <flux:menu.item icon="document-text">View Project</flux:menu.item>
-                                <flux:menu.item icon="receipt-refund" >Edit</flux:menu.item>
-                                <flux:menu.item icon="archive-box" variant="danger"
-                                    wire:click="confirmDelete({{ $project->id }})">
-                                    Delete
-                                </flux:menu.item>
+                                <flux:menu.item icon="document-text" href="{{ route('projects.show', $project->id) }}" wire:navigate>View Project</flux:menu.item>
+                                @if(auth()->id() === $project->user_id)
+                                    <flux:menu.item icon="archive-box" variant="danger"
+                                        wire:click="confirmDelete({{ $project->id }})">
+                                        Delete
+                                    </flux:menu.item>
+                                @endif
                             </flux:menu>
                         </flux:dropdown>
                     </flux:table.cell>
