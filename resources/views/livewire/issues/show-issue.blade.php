@@ -156,7 +156,7 @@
     </div>
     <!-- Actions -->
     @if($isEditing)
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h3>
         <div class="flex gap-3">
             <flux:button wire:click="save" class="flex-1">Save Changes</flux:button>
