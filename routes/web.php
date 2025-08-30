@@ -19,6 +19,9 @@ Route::get('/projects/{id}', function($id) {
     return view('projects.show', ['id' => $id]);
 })->name('projects.show');
 
+Route::get('/issues', \App\Livewire\Issues\Table::class)->name('issues.index');
+Route::get('/issues/{issue}', \App\Livewire\Issues\ShowIssue::class)->name('issues.show');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

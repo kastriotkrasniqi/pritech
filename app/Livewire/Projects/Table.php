@@ -72,7 +72,7 @@ class Table extends Component
             $this->selectedProject->delete();
             $this->showDeleteModal = false;
             $this->selectedProject = null;
-            Flux::toast(variant: 'danger',text: 'Project deleted successfully!',);
+            Flux::toast(variant: 'danger',text: 'Project deleted successfully!');
         }
     }
 

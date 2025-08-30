@@ -1,7 +1,6 @@
 <div>
     <flux:modal.trigger name="create-project">
-        <flux:button size="sm" class="mb-4">Create Project
-            <flux:icon.plus variant="mini" />
+        <flux:button size="sm" class="mb-4" icon="plus">Create Project
         </flux:button>
     </flux:modal.trigger>
 
