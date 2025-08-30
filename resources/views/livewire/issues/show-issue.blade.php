@@ -139,7 +139,7 @@
         </div>
         @if($isEditing)
         <flux:field>
-            <flux:select wire:model="form.tags" label="Tags" variant="listbox" placeholder="Select tags..." searchable multiple>
+            <flux:select wire:model="form.tags" label="Tags" variant="listbox" placeholder="Select tags..." searchable multiple >
                 @foreach($this->tags as $tag)
                     <flux:select.option value="{{ $tag->id }}">{{ $tag->name }}</flux:select.option>
                 @endforeach
