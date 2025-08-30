@@ -34,7 +34,7 @@
                         <flux:dropdown position="bottom" align="end" offset="-15">
                             <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
                             <flux:menu>
-                                <flux:menu.item icon="pencil" href="{{ route('tags.edit', $tag->id) }}" wire:navigate>Edit Tag</flux:menu.item>
+                                <flux:menu.item icon="pencil" href="{{ route('tags.edit', $tag->id) }}" wire:navigate>View Tag</flux:menu.item>
                                 <flux:menu.item icon="archive-box" variant="danger" wire:click="confirmDelete({{ $tag->id }})">Delete</flux:menu.item>
                             </flux:menu>
                         </flux:dropdown>

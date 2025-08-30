@@ -22,6 +22,8 @@ class ShowIssue extends Component
     {
         $this->issue = $issue;
         $this->form->fill($issue->toArray());
+        $this->form->tags = $issue->tags->pluck('id')->map(fn($id) => (int) $id)->toArray();
+        $this->form->project_id = $issue->project_id;
     }
 
     public function toggleEdit()

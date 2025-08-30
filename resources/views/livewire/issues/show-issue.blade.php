@@ -95,25 +95,35 @@
 
     <!-- Issue Details -->
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @if($isEditing)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center ">
+                @if($isEditing)
+                <div class="flex flex-col justify-center h-full">
+                    <flux:field>
+                        <label class="block text-sm font-medium mb-1">Project</label>
 
-            <flux:field>
-                <flux:select wire:model="form.project_id" variant="combobox" :filter="false" label="Project"
-                    placeholder="Select project...">
-                    <x-slot name="input">
-                        <flux:select.input wire:model.live="searchProject" />
-                    </x-slot>
-                    @foreach ($this->projects as $project)
-                    <flux:select.option value="{{ $project->id }}" wire:key="{{ $project->id }}">
-                        {{ $project->name }}
-                    </flux:select.option>
-                    @endforeach
-                </flux:select>
-            </flux:field>
-            <flux:field>
-                <flux:date-picker wire:model="form.due_date" label="Due Date" />
-            </flux:field>
+                        <flux:select wire:model="form.project_id" variant="combobox" :filter="false" label="Select Project"
+                            placeholder="Select project...">
+                            <x-slot name="input">
+                                <flux:select.input wire:model.live="searchProject"/>
+                            </x-slot>
+                            @foreach ($this->projects as $project)
+                                <flux:select.option value="{{ $project->id }}" wire:key="{{ $project->id }}">
+                                    {{ $project->name }}
+                                </flux:select.option>
+                            @endforeach
+                        </flux:select>
+                         @if($issue->project)
+                            <flux:badge size="sm" color="blue" class="mb-2">Current: {{ $issue->project->name }}</flux:badge>
+                        @else
+                            <span class="text-xs text-gray-500 mb-2">No Project Assigned</span>
+                        @endif
+                    </flux:field>
+                </div>
+                <div class="flex flex-col justify-center h-full">
+                    <flux:field>
+                        <flux:date-picker wire:model="form.due_date" label="Due Date" />
+                    </flux:field>
+                </div>
             @else
             <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Project</p>

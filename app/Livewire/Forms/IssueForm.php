@@ -15,6 +15,12 @@ class IssueForm extends Form
     public $project_id = null;
     public $tags = [];
 
+    public function setIssue(?Issue $issue)
+    {
+        $this->issue = $issue;
+        $this->tags = $issue ? $issue->tags->pluck('id')->map(fn($id) => (int) $id)->toArray() : [];
+    }
+
     public function rules(): array
     {
         return [
