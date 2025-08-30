@@ -44,6 +44,7 @@ class Table extends Component
     }
 
     #[On('project-created')]
+
     #[\Livewire\Attributes\Computed]
     public function projects()
     {

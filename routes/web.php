@@ -22,6 +22,10 @@ Route::get('/projects/{id}', function($id) {
 Route::get('/issues', \App\Livewire\Issues\Table::class)->name('issues.index');
 Route::get('/issues/{issue}', \App\Livewire\Issues\ShowIssue::class)->name('issues.show');
 
+Route::get('/tags', \App\Livewire\Tags\Table::class)->name('tags.index');
+
+Route::get('/tags/{tag}/edit', \App\Livewire\Tags\EditTag::class)->name('tags.edit');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
