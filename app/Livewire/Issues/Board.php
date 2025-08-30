@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Issues;
 
-use Livewire\Component;
 use App\Models\Issue;
+use Livewire\Component;
 
-class Board extends Component
+final class Board extends Component
 {
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
         $statuses = ['open', 'in_progress', 'closed'];
         $issues = [];
         foreach ($statuses as $status) {
-            $issues[$status] = \App\Models\Issue::with('project', 'tags')
+            $issues[$status] = Issue::with('project', 'tags')
                 ->where('status', $status)
                 ->orderBy('created_at', 'desc')
                 ->limit(10)
                 ->get();
         }
+
         return view('livewire.issues.board', [
             'issues' => $issues,
             'statuses' => $statuses,

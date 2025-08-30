@@ -1,25 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Comments;
 
-use App\Models\Issue;
 use App\Models\Comment;
+use App\Models\Issue;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Flux\Flux;
-use Cog\Laravel\Love\Reacterable\Models\Traits\Reacterable;
-use Cog\Laravel\Love\ReactionType\Models\ReactionType;
 
-class IssueComments extends Component
+final class IssueComments extends Component
 {
     use WithPagination;
 
     public Issue $issue;
+
     public $newComment = '';
-    public $editingCommentId = null;
+
+    public $editingCommentId;
+
     public $editingCommentBody = '';
 
-    public function mount(Issue $issue)
+    public function mount(Issue $issue): void
     {
         $this->issue = $issue;
     }
@@ -33,15 +36,15 @@ class IssueComments extends Component
         return $this->issue->comments()->with('user')->latest()->paginate(4);
     }
 
-    public function addComment()
+    public function addComment(): void
     {
         $this->validate([
             'newComment' => 'required|string|max:1000',
         ]);
 
         $this->issue->comments()->create([
-            'user_id'     => auth()->id(),
-            'body'        => $this->newComment,
+            'user_id' => auth()->id(),
+            'body' => $this->newComment,
             'author_name' => auth()->user()->name,
         ]);
 
@@ -50,16 +53,16 @@ class IssueComments extends Component
         $this->resetPage();
     }
 
-    public function editComment($id)
+    public function editComment($id): void
     {
         $comment = Comment::find($id);
         if ($comment && $comment->user_id === auth()->id()) {
-            $this->editingCommentId   = $id;
+            $this->editingCommentId = $id;
             $this->editingCommentBody = $comment->body;
         }
     }
 
-    public function updateComment()
+    public function updateComment(): void
     {
         $this->validate([
             'editingCommentBody' => 'required|string|max:1000',
@@ -76,12 +79,12 @@ class IssueComments extends Component
         }
     }
 
-    public function cancelEditComment()
+    public function cancelEditComment(): void
     {
         $this->reset(['editingCommentId', 'editingCommentBody']);
     }
 
-    public function deleteComment($id)
+    public function deleteComment($id): void
     {
         $comment = Comment::find($id);
         $projectOwnerId = $this->issue->project?->owner_id;
@@ -93,7 +96,7 @@ class IssueComments extends Component
         }
     }
 
-    public function toggleLike($commentId)
+    public function toggleLike($commentId): void
     {
         $comment = $this->comments->firstWhere('id', $commentId);
         $user = auth()->user();
@@ -107,7 +110,7 @@ class IssueComments extends Component
         }
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
         return view('livewire.comments.issue-comments', [
             'comments' => $this->comments,

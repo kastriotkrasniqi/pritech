@@ -1,15 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Models;
 
-
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 
-
-class Comment extends Model
+final class Comment extends Model
 {
-    use HasFactory, \Conner\Likeable\Likeable;
+    use \Conner\Likeable\Likeable, HasFactory;
 
     protected $fillable = [
         'issue_id',
@@ -27,5 +27,4 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

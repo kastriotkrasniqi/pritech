@@ -1,18 +1,24 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Livewire\Tags;
 
 use App\Models\Tag;
 use Flux\Flux;
 use Livewire\Component;
 
-class EditTag extends Component
+final class EditTag extends Component
 {
     public Tag $tag;
+
     public $name = '';
+
     public $color = '';
+
     public $isEditing = false;
 
-    public function mount(Tag $tag)
+    public function mount(Tag $tag): void
     {
         $this->tag = $tag;
         $this->name = $tag->name;
@@ -20,19 +26,19 @@ class EditTag extends Component
         $this->isEditing = false;
     }
 
-    public function toggleEdit()
+    public function toggleEdit(): void
     {
-        $this->isEditing = !$this->isEditing;
+        $this->isEditing = ! $this->isEditing;
         if ($this->isEditing) {
             $this->name = $this->tag->name;
             $this->color = $this->tag->color;
         }
     }
 
-    public function save()
+    public function save(): void
     {
         $this->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $this->tag->id,
+            'name' => 'required|string|max:255|unique:tags,name,'.$this->tag->id,
             'color' => 'required|string|max:32',
         ]);
         $this->tag->update([
@@ -43,7 +49,7 @@ class EditTag extends Component
         Flux::toast(variant: 'success', text: 'Tag updated successfully!');
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
         return view('livewire.tags.edit-tag');
     }

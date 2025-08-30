@@ -1,14 +1,17 @@
 <?php
+
+declare(strict_types=1);
+use App\Enums\IssuePriority;
+use App\Enums\IssueStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\IssueStatus;
-use App\Enums\IssuePriority;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('issues', function (Blueprint $table) {
+        Schema::create('issues', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('title');

@@ -1,14 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Enums\IssueStatus;
 use App\Enums\IssuePriority;
-use App\Models\Comment;
-use App\Models\Tag;
+use App\Enums\IssueStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Issue extends Model
+final class Issue extends Model
 {
     use HasFactory;
 
@@ -21,6 +22,16 @@ class Issue extends Model
         'due_date',
     ];
 
+    public static function statusOptions(): array
+    {
+        return IssueStatus::all();
+    }
+
+    public static function priorityOptions(): array
+    {
+        return IssuePriority::all();
+    }
+
     public function project()
     {
         return $this->belongsTo(Project::class);
@@ -31,7 +42,6 @@ class Issue extends Model
         return $this->hasMany(Comment::class);
     }
 
-
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'issue_tag');
@@ -41,15 +51,5 @@ class Issue extends Model
     public function members()
     {
         return $this->belongsToMany(User::class, 'issue_user');
-    }
-
-    public static function statusOptions(): array
-    {
-        return IssueStatus::all();
-    }
-
-    public static function priorityOptions(): array
-    {
-        return IssuePriority::all();
     }
 }

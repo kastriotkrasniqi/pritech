@@ -1,29 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Projects;
 
 use App\Livewire\Forms\ProjectForm;
 use App\Models\Project;
 use Flux\Flux;
 use Livewire\Component;
-use Livewire\Attributes\On;
 
-class ShowProject extends Component
+final class ShowProject extends Component
 {
     public Project $project;
+
     public ProjectForm $form;
+
     public $isEditing = false;
+
     public $searchOwner = '';
+
     public $showDeleteModal = false;
 
-    public function mount()
+    public function mount(): void
     {
         $id = request()->route('id');
         $this->project = Project::with('owner')->findOrFail($id);
         $this->loadFormData();
     }
 
-    public function loadFormData()
+    public function loadFormData(): void
     {
         $this->form->name = $this->project->name;
         $this->form->description = $this->project->description;
@@ -32,55 +37,56 @@ class ShowProject extends Component
         $this->form->deadline = $this->project->deadline;
     }
 
-    public function toggleEdit()
+    public function toggleEdit(): void
     {
-        $this->isEditing = !$this->isEditing;
+        $this->isEditing = ! $this->isEditing;
         if ($this->isEditing) {
             $this->loadFormData();
         }
     }
 
-    public function save()
+    public function save(): void
     {
         $this->validate();
-        
+
         // Additional validation for deadline
         if ($this->form->start_date && $this->form->deadline && $this->form->deadline < $this->form->start_date) {
             Flux::toast(variant: 'danger', text: 'Deadline cannot be before start date!');
+
             return;
         }
-        
+
         $this->project->update($this->form->all());
         $this->project->refresh();
-        
+
         $this->isEditing = false;
         Flux::toast(variant: 'success', text: 'Project updated successfully!');
     }
 
-    public function cancel()
+    public function cancel(): void
     {
         $this->isEditing = false;
         $this->loadFormData();
     }
 
-    public function canEdit()
+    public function canEdit(): bool
     {
         return auth()->id() === $this->project->user_id;
     }
 
-    public function canDelete()
+    public function canDelete(): bool
     {
         return auth()->id() === $this->project->user_id;
     }
 
-    public function isOverdue()
+    public function isOverdue(): bool
     {
         return $this->project->deadline && $this->project->deadline->isPast();
     }
 
-    public function getStatusColor()
+    public function getStatusColor(): string
     {
-        if (!$this->project->deadline) {
+        if (! $this->project->deadline) {
             return 'gray';
         }
         if ($this->isOverdue()) {
@@ -89,10 +95,11 @@ class ShowProject extends Component
         if ($this->project->deadline->diffInDays(now()) <= 7) {
             return 'yellow';
         }
+
         return 'green';
     }
 
-    public function confirmDelete()
+    public function confirmDelete(): void
     {
         $this->showDeleteModal = true;
     }
@@ -102,11 +109,13 @@ class ShowProject extends Component
         if ($this->canDelete()) {
             $this->project->delete();
             Flux::toast(variant: 'success', text: 'Project deleted successfully!');
+
             return redirect()->route('projects.index');
         }
+        return null;
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
         return view('livewire.projects.show-project');
     }
@@ -115,7 +124,7 @@ class ShowProject extends Component
     public function users()
     {
         return \App\Models\User::query()
-            ->when($this->searchOwner, fn($query) => $query->where('name', 'like', '%' . $this->searchOwner . '%'))
+            ->when($this->searchOwner, fn ($query) => $query->where('name', 'like', '%'.$this->searchOwner.'%'))
             ->limit(5)
             ->get();
     }

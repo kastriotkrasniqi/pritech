@@ -1,21 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use Livewire\Component;
-use \Livewire\WithPagination;
 
-class Example extends Component
+final class Example extends Component
 {
-    public function render()
+    public $sortBy = 'date';
+
+    public $sortDirection = 'desc';
+
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
         return view('projects.index');
     }
 
-    public $sortBy = 'date';
-    public $sortDirection = 'desc';
-
-    public function sort($column) {
+    public function sort($column): void
+    {
         if ($this->sortBy === $column) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
@@ -31,5 +34,4 @@ class Example extends Component
             ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
             ->paginate(5);
     }
-
 }

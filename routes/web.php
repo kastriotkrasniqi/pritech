@@ -1,7 +1,7 @@
 <?php
 
-use App\Livewire\Projects\Table;
-use App\Livewire\Projects\ShowProject;
+declare(strict_types=1);
+
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -11,21 +11,20 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/projects',function(){
+Route::get('/projects', function () {
     return view('projects.index');
 })->name('projects.index');
 
-Route::get('/projects/{id}', function($id) {
+Route::get('/projects/{id}', function ($id) {
     return view('projects.show', ['id' => $id]);
 })->name('projects.show');
 
-Route::get('/issues', \App\Livewire\Issues\Table::class)->name('issues.index');
-Route::get('/issues/{issue}', \App\Livewire\Issues\ShowIssue::class)->name('issues.show');
+Route::get('/issues', App\Livewire\Issues\Table::class)->name('issues.index');
+Route::get('/issues/{issue}', App\Livewire\Issues\ShowIssue::class)->name('issues.show');
 
-Route::get('/tags', \App\Livewire\Tags\Table::class)->name('tags.index');
+Route::get('/tags', App\Livewire\Tags\Table::class)->name('tags.index');
 
-Route::get('/tags/{tag}/edit', \App\Livewire\Tags\EditTag::class)->name('tags.edit');
-
+Route::get('/tags/{tag}/edit', App\Livewire\Tags\EditTag::class)->name('tags.edit');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
