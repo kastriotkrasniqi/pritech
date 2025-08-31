@@ -16,7 +16,6 @@ final class CommentFactory extends Factory
     {
         return [
             'issue_id' => Issue::factory(),
-            'author_name' => $this->faker->name(),
             'body' => $this->faker->paragraph(),
             'user_id' => \App\Models\User::factory(),
         ];

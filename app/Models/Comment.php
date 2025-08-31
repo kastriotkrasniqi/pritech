@@ -13,7 +13,6 @@ final class Comment extends Model
 
     protected $fillable = [
         'issue_id',
-        'author_name',
         'body',
         'user_id',
     ];

@@ -12,9 +12,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-1">
                             <span class="font-semibold text-gray-900 dark:text-white">{{ $comment->user->name }}</span>
-                            @if($comment->user->is_moderator)
-                                <flux:badge color="lime" size="xs" icon="check-badge" inset="top bottom">Mod</flux:badge>
-                            @endif
+
                             <span class="text-xs text-gray-500 dark:text-gray-400">{{ $comment->created_at->diffForHumans() }}</span>
                         </div>
 

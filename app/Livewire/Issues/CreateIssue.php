@@ -6,22 +6,25 @@ namespace App\Livewire\Issues;
 
 use App\Enums\IssuePriority;
 use App\Enums\IssueStatus;
+use App\Livewire\Forms\IssueForm;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Tag;
+use App\Models\User;
 use Flux\Flux;
 use Livewire\Component;
 
 final class CreateIssue extends Component
 {
-    public \App\Livewire\Forms\IssueForm $form;
+    public IssueForm $form;
 
     public $searchProject = '';
 
-    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+    public function render()
     {
         return view('livewire.issues.create-issue', [
-            'tags' => Tag::all(),
+            'tags' => Tag::all(['id','name','color']),
+            'members' => User::all(['id','name']),
             'statuses' => IssueStatus::all(),
             'priorities' => IssuePriority::all(),
         ]);
@@ -30,9 +33,14 @@ final class CreateIssue extends Component
     public function save(): void
     {
         $this->validate();
-        $issue = Issue::create($this->form->all());
+
+        $issue = Issue::create($this->form->forModel());
+
         $issue->tags()->sync($this->form->tags);
+        $issue->members()->sync($this->form->members);
+
         $this->form->reset();
+
         Flux::modal('create-issue')->close();
         $this->dispatch('issue-created');
         Flux::toast(variant: 'success', text: 'Issue created successfully!');

@@ -13,7 +13,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('issue_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('author_name');
             $table->text('body');
             $table->timestamps();
         });

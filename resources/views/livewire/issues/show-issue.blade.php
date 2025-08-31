@@ -62,14 +62,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @if($isEditing)
                 <flux:field>
-                    <flux:select wire:model="form.status" label="Status" variant="listbox" placeholder="Select status...">
+                    <flux:select wire:model="form.status" label="Status"  placeholder="Select status...">
                         @foreach($statuses as $status)
                             <flux:select.option value="{{ $status }}">{{ ucfirst(str_replace('_', ' ', $status)) }}</flux:select.option>
                         @endforeach
                     </flux:select>
                 </flux:field>
                 <flux:field>
-                    <flux:select wire:model="form.priority" label="Priority" variant="listbox" placeholder="Select priority...">
+                    <flux:select wire:model="form.priority" label="Priority"  placeholder="Select priority...">
                         @foreach($priorities as $priority)
                             <flux:select.option value="{{ $priority }}">{{ ucfirst($priority) }}</flux:select.option>
                         @endforeach
@@ -99,25 +99,12 @@
                 @if($isEditing)
                 <div class="flex flex-col justify-center h-full">
                     <flux:field>
-                        <label class="block text-sm font-medium mb-1">Project</label>
-
-                        <flux:select wire:model="form.project_id" variant="combobox" :filter="false" label="Select Project"
-                            placeholder="Select project...">
-                            <x-slot name="input">
-                                <flux:select.input wire:model.live="searchProject"/>
-                            </x-slot>
-                            @foreach ($this->projects as $project)
-                                <flux:select.option value="{{ $project->id }}" wire:key="{{ $project->id }}">
-                                    {{ $project->name }}
-                                </flux:select.option>
-                            @endforeach
-                        </flux:select>
-                         @if($issue->project)
-                            <flux:badge size="sm" color="blue" class="mb-2">Current: {{ $issue->project->name }}</flux:badge>
-                        @else
-                            <span class="text-xs text-gray-500 mb-2">No Project Assigned</span>
-                        @endif
-                    </flux:field>
+                    <flux:select wire:model="form.project_id" label="Project" variant="listbox"  placeholder="Select project..." searchable>
+                        @foreach($this->projects as $project)
+                            <flux:select.option value="{{ $project->id }}">{{ ucfirst($project->name) }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </flux:field>
                 </div>
                 <div class="flex flex-col justify-center h-full">
                     <flux:field>
@@ -161,6 +148,29 @@
             <flux:badge size="xs" :style="'background-color: ' . $tag->color . '; color: #fff;'">{{ $tag->name }}
             </flux:badge>
             @endforeach
+        </div>
+        @endif
+    </div>
+    <!-- Members -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Members</h3>
+        </div>
+        @if($isEditing)
+        <flux:field>
+            <flux:select wire:model="form.members" label="Members" variant="listbox" placeholder="Assign members..." searchable multiple>
+                @foreach(App\Models\User::all() as $user)
+                    <flux:select.option value="{{ $user->id }}">{{ $user->name }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </flux:field>
+        @else
+        <div class="flex flex-wrap gap-2">
+            @forelse($issue->members as $user)
+                <flux:badge size="sm" color="gray">{{ $user->name }}</flux:badge>
+            @empty
+                <span class="text-xs text-gray-500">No members assigned.</span>
+            @endforelse
         </div>
         @endif
     </div>

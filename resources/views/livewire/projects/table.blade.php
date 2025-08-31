@@ -20,10 +20,10 @@
                 <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
                     wire:click="sort('name')">Name</flux:table.column>
                 <flux:table.column>Description</flux:table.column>
-                <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection"
-                    wire:click="sort('created_at')">Created</flux:table.column>
                 <flux:table.column>Owner</flux:table.column>
                 <flux:table.column>Deadline</flux:table.column>
+                 <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection"
+                    wire:click="sort('created_at')">Created</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
 
@@ -35,11 +35,11 @@
                             {{ $project->name }}
                         </a>
                     </flux:table.cell>
+                     <flux:table.cell>{{ $project->owner?->name ?? '-' }}</flux:table.cell>
                     <flux:table.cell>{{ str()->limit($project->description, 30) }}</flux:table.cell>
-                    <flux:table.cell class="whitespace-nowrap">{{ $project->created_at->format('Y-m-d') }}
-                    </flux:table.cell>
-                    <flux:table.cell>{{ $project->owner?->name ?? '-' }}</flux:table.cell>
                     <flux:table.cell>{{ $project->deadline ?? '-' }}</flux:table.cell>
+                     <flux:table.cell class="whitespace-nowrap">{{ $project->created_at->format('Y-m-d') }}
+                    </flux:table.cell>
                     <flux:table.cell>
                         <flux:dropdown position="bottom" align="end" offset="-15">
                             <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">

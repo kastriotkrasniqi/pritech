@@ -22,14 +22,14 @@ final class ShowIssue extends Component
 
     public $searchTag = '';
 
-    public $searchProject = '';
 
     public function mount(Issue $issue): void
     {
-        $this->issue = $issue;
-        $this->form->fill($issue->toArray());
-        $this->form->tags = $issue->tags->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
-        $this->form->project_id = $issue->project_id;
+    $this->issue = $issue;
+    $this->form->fill($issue->toArray());
+    $this->form->tags = $issue->tags->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
+    $this->form->project_id = $issue->project_id;
+    $this->form->members = $issue->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
     }
 
     public function toggleEdit(): void
@@ -37,16 +37,19 @@ final class ShowIssue extends Component
         $this->isEditing = ! $this->isEditing;
         if ($this->isEditing) {
             $this->form->fill($this->issue->toArray());
+            $this->form->members = $this->issue->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
         }
     }
 
     public function save(): void
     {
-        $this->validate();
-        $this->issue->update($this->form->all());
-        $this->issue->tags()->sync($this->form->tags);
-        $this->isEditing = false;
-        $this->form->fill($this->issue->fresh()->toArray());
+    $this->validate();
+    $this->issue->update($this->form->forModel());
+    $this->issue->tags()->sync($this->form->tags);
+    $this->issue->members()->sync($this->form->members);
+    $this->isEditing = false;
+    $this->form->fill($this->issue->fresh()->toArray());
+    $this->form->members = $this->issue->fresh()->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
     }
 
     #[\Livewire\Attributes\Computed]
@@ -60,10 +63,7 @@ final class ShowIssue extends Component
     #[\Livewire\Attributes\Computed]
     public function projects()
     {
-        return Project::query()
-            ->when($this->searchProject, fn ($query) => $query->where('name', 'like', '%'.$this->searchProject.'%'))
-            ->limit(5)
-            ->get();
+        return Project::query()->get(['id', 'name']);
     }
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory

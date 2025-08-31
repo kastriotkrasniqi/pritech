@@ -45,7 +45,6 @@ final class IssueComments extends Component
         $this->issue->comments()->create([
             'user_id' => auth()->id(),
             'body' => $this->newComment,
-            'author_name' => auth()->user()->name,
         ]);
 
         $this->reset('newComment');
@@ -87,12 +86,12 @@ final class IssueComments extends Component
     public function deleteComment($id): void
     {
         $comment = Comment::find($id);
-        $projectOwnerId = $this->issue->project?->owner_id;
+        $projectOwnerId = $this->issue->project?->user_id;
 
         if ($comment && (auth()->id() === $comment->user_id || auth()->id() === $projectOwnerId)) {
             $comment->delete();
             Flux::toast(variant: 'danger', text: 'Comment deleted successfully!');
-            $this->resetPage();
+            // $this->resetPage();
         }
     }
 

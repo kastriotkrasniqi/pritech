@@ -1,6 +1,6 @@
 <flux:modal name="create-project" class="md:w-96">
     <div class="space-y-6">
-        <div>
+        <div
             <flux:heading size="lg">Create Project</flux:heading>
         </div>
         <form wire:submit.prevent="save">

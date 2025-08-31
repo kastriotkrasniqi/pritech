@@ -5,20 +5,20 @@
         </div>
         <form wire:submit.prevent="save">
             <flux:field class="mb-4">
-                <flux:input label="Title" wire:model="form.title"  />
+                <flux:input label="Title" wire:model="form.title" placeholder="Enter title..."  />
             </flux:field>
             <flux:field class="mb-4">
-                <flux:textarea label="Description" wire:model="form.description" rows="3" />
+                <flux:textarea label="Description" wire:model="form.description" rows="3" placeholder="Enter description..." />
             </flux:field>
             <flux:field class="mb-4">
-                <flux:select wire:model="form.status" label="Status" variant="listbox" placeholder="Select status..." >
+                <flux:select wire:model="form.status" label="Status" placeholder="Select status..." >
                     @foreach($statuses as $status)
                         <flux:select.option value="{{ $status }}">{{ ucfirst(str_replace('_', ' ', $status)) }}</flux:select.option>
                     @endforeach
                 </flux:select>
             </flux:field>
             <flux:field class="mb-4">
-                <flux:select wire:model="form.priority" label="Priority" varinat="listbox" placeholder="Select priority..." >
+                <flux:select wire:model="form.priority" label="Priority"  placeholder="Select priority..." >
                     @foreach($priorities as $priority)
                         <flux:select.option value="{{ $priority }}">{{ ucfirst($priority) }}</flux:select.option>
                     @endforeach
@@ -28,7 +28,7 @@
                 <flux:date-picker label="Due Date" wire:model="form.due_date" />
             </flux:field>
             <flux:field class="mb-4">
-                <flux:select wire:model="form.project_id" variant="combobox" :filter="false" label="Project" placeholder="Select project..." >
+                <flux:select wire:model="form.project_id" variant="combobox" :filter="false" label="Project" placeholder="Select project with ajax request..." >
                     <x-slot name="input">
                         <flux:select.input wire:model.live="searchProject" />
                     </x-slot>
@@ -46,6 +46,15 @@
                     @endforeach
                 </flux:select>
             </flux:field>
+
+             <flux:field class="mb-4">
+                <flux:select wire:model="form.members" label="Members"  variant="listbox" multiple placeholder="Select members..." searchable>
+                    @foreach($members as $user)
+                        <flux:select.option value="{{ $user->id }}">{{ $user->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            </flux:field>
+
             <div class="flex">
                 <flux:spacer />
                 <flux:button size="sm" type="submit">Save Issue</flux:button>
