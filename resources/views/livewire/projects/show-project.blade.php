@@ -211,34 +211,47 @@
             </div>
 
             <!-- Project Issues -->
-            @if($project->issues->count() > 0)
+            @if($this->issues->count() > 0)
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Project Issues</h3>
-                <div class="space-y-3">
-                    @foreach($project->issues->take(5) as $issue)
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div>
-                            <h4 class="font-medium text-gray-900 dark:text-white">{{ $issue->title }}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ Str::limit($issue->description, 60) }}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <flux:badge size="sm" color="{{ $issue->status === 'open' ? 'green' : ($issue->status === 'in_progress' ? 'yellow' : 'gray') }}">
-                                {{ ucfirst(str_replace('_', ' ', $issue->status)) }}
-                            </flux:badge>
-                            <flux:badge size="sm" color="{{ $issue->priority === 'high' ? 'red' : ($issue->priority === 'medium' ? 'yellow' : 'green') }}">
-                                {{ ucfirst($issue->priority) }}
-                            </flux:badge>
-                        </div>
-                    </div>
-                    @endforeach
-                    @if($project->issues->count() > 5)
-                    <div class="text-center pt-2">
-                        <flux:button variant="ghost" size="sm">
-                            View all {{ $project->issues->count() }} issues
-                        </flux:button>
-                    </div>
-                    @endif
-                </div>
+                <flux:table :paginate="$this->issues">
+                    <flux:table.columns>
+                        <flux:table.column>Title</flux:table.column>
+                        <flux:table.column>Status</flux:table.column>
+                        <flux:table.column>Priority</flux:table.column>
+                        <flux:table.column>Tags</flux:table.column>
+                        <flux:table.column>Due Date</flux:table.column>
+                    </flux:table.columns>
+                    <flux:table.rows>
+                        @foreach ($this->issues as $issue)
+                        <flux:table.row :key="$issue->id" class="even:bg-gray-50 dark:even:bg-gray-700/30">
+                            <flux:table.cell>
+                                <a href="{{ route('issues.show', $issue->id) }}" wire:navigate class="font-medium hover:underline">{{ $issue->title }}</a>
+                            </flux:table.cell>
+                            <flux:table.cell>
+                                <flux:badge size="sm" color="{{ $issue->status === 'open' ? 'green' : ($issue->status === 'in_progress' ? 'yellow' : 'gray') }}">
+                                    {{ ucfirst(str_replace('_', ' ', $issue->status)) }}
+                                </flux:badge>
+                            </flux:table.cell>
+                            <flux:table.cell>
+                                <flux:badge size="sm" color="{{ $issue->priority === 'high' ? 'red' : ($issue->priority === 'medium' ? 'yellow' : 'green') }}">
+                                    {{ ucfirst($issue->priority) }}
+                                </flux:badge>
+                            </flux:table.cell>
+                            <flux:table.cell>
+                                @foreach($issue->tags as $tag)
+                                    <flux:badge size="xxs" :style="'background-color: ' . $tag->color . '; color: #fff; font-size: 0.65rem; padding: 0.1rem 0.3rem;'">
+                                        {{ $tag->name }}
+                                    </flux:badge>
+                                @endforeach
+                            </flux:table.cell>
+                            <flux:table.cell>
+                                {{ $issue->due_date }}
+                            </flux:table.cell>
+                        </flux:table.row>
+                        @endforeach
+                    </flux:table.rows>
+                </flux:table>
             </div>
             @endif
         </div>

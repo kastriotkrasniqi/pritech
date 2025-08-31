@@ -8,9 +8,12 @@ use App\Livewire\Forms\ProjectForm;
 use App\Models\Project;
 use Flux\Flux;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 final class ShowProject extends Component
 {
+    use WithPagination;
+
     public Project $project;
 
     public ProjectForm $form;
@@ -20,6 +23,7 @@ final class ShowProject extends Component
     public $searchOwner = '';
 
     public $showDeleteModal = false;
+
 
     public function mount(): void
     {
@@ -117,4 +121,10 @@ final class ShowProject extends Component
             ->limit(5)
             ->get();
     }
+
+        #[\Livewire\Attributes\Computed]
+        public function issues()
+        {
+            return $this->project->issues()->orderByDesc('created_at')->paginate(5);
+        }
 }
