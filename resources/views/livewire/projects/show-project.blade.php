@@ -18,7 +18,7 @@
             </ol>
 
             <div class="flex items-center gap-3">
-                @if($this->canEdit())
+                @can('update', $project)
                     <flux:button
                         wire:click="toggleEdit"
                         variant="{{ $isEditing ? 'ghost' : 'outline' }}"
@@ -30,8 +30,8 @@
                             Edit Project
                         @endif
                     </flux:button>
-                @endif
-                @if($this->canDelete())
+                @endcan
+                @can('delete', $project)
                     <flux:button
                         variant="danger"
                         wire:click="confirmDelete"
@@ -39,7 +39,7 @@
                     >
                         Delete Project
                     </flux:button>
-                @endif
+                @endcan
                 <flux:button
                     variant="ghost"
                     href="{{ route('projects.index') }}"

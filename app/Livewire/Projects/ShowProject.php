@@ -69,15 +69,6 @@ final class ShowProject extends Component
         $this->loadFormData();
     }
 
-    public function canEdit(): bool
-    {
-        return auth()->id() === $this->project->user_id;
-    }
-
-    public function canDelete(): bool
-    {
-        return auth()->id() === $this->project->user_id;
-    }
 
     public function isOverdue(): bool
     {
@@ -106,13 +97,11 @@ final class ShowProject extends Component
 
     public function deleteProject()
     {
-        if ($this->canDelete()) {
+            $this->authorize('delete', $this->project);
             $this->project->delete();
             Flux::toast(variant: 'success', text: 'Project deleted successfully!');
 
             return redirect()->route('projects.index');
-        }
-        return null;
     }
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory

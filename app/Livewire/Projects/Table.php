@@ -73,6 +73,7 @@ final class Table extends Component
     public function deleteProject(): void
     {
         if ($this->selectedProject) {
+            $this->authorize('delete', $this->selectedProject);
             $this->selectedProject->delete();
             $this->showDeleteModal = false;
             $this->selectedProject = null;
