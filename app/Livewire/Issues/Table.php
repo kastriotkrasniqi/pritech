@@ -42,6 +42,11 @@ final class Table extends Component
         }
     }
 
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
+    }
+
     public function sort($column): void
     {
         if ($this->sortBy === $column) {
@@ -58,6 +63,7 @@ final class Table extends Component
             'statuses' => IssueStatus::all(),
             'priorities' => IssuePriority::all(),
             'tags' => Tag::all(),
+            'perPageOptions' => [5, 10, 25, 50, 100],
         ]);
     }
 

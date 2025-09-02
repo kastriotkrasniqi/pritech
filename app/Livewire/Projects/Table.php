@@ -34,7 +34,14 @@ final class Table extends Component
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
 
-        return view('livewire.projects.table');
+        return view('livewire.projects.table', [
+            'perPageOptions' => [5, 10, 25, 50, 100],
+        ]);
+    }
+
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
     }
 
     public function sort($column): void

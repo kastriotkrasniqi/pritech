@@ -8,25 +8,32 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
             <flux:input size="sm" wire:model.live.debounce.300ms="search" class="w-full sm:w-64"
                 placeholder="Search issues..." />
-            <flux:select size="sm" wire:model.live="filterStatus" class="w-full sm:w-32" placeholder="Status">
-                <flux:select.option value="">All Statuses</flux:select.option>
-                @foreach($statuses as $status)
-                <flux:select.option value="{{ $status }}">{{ ucfirst(str_replace('_', ' ', $status)) }}
-                </flux:select.option>
-                @endforeach
-            </flux:select>
-            <flux:select size="sm" wire:model.live="filterPriority" class="w-full sm:w-32" placeholder="Priority">
-                <flux:select.option value="">All Priorities</flux:select.option>
-                @foreach($priorities as $priority)
-                <flux:select.option value="{{ $priority }}">{{ ucfirst($priority) }}</flux:select.option>
-                @endforeach
-            </flux:select>
-            <flux:select size="sm" wire:model.live="filterTag" class="w-full sm:w-32" placeholder="Tag">
-                <flux:select.option value="">All Tags</flux:select.option>
-                @foreach($tags as $tag)
-                <flux:select.option value="{{ $tag->id }}">{{ $tag->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                <flux:select size="sm" wire:model.live="filterStatus" class="w-full sm:w-32" placeholder="Status">
+                    <flux:select.option value="">All Statuses</flux:select.option>
+                    @foreach($statuses as $status)
+                    <flux:select.option value="{{ $status }}">{{ ucfirst(str_replace('_', ' ', $status)) }}
+                    </flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select size="sm" wire:model.live="filterPriority" class="w-full sm:w-32" placeholder="Priority">
+                    <flux:select.option value="">All Priorities</flux:select.option>
+                    @foreach($priorities as $priority)
+                    <flux:select.option value="{{ $priority }}">{{ ucfirst($priority) }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select size="sm" wire:model.live="filterTag" class="w-full sm:w-32" placeholder="Tag">
+                    <flux:select.option value="">All Tags</flux:select.option>
+                    @foreach($tags as $tag)
+                    <flux:select.option value="{{ $tag->id }}">{{ $tag->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select size="sm" wire:model.live="perPage" class="w-full sm:w-24" placeholder="Per Page">
+                    @foreach($perPageOptions as $option)
+                    <flux:select.option value="{{ $option }}">{{ $option }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            </div>
         </div>
         <flux:table :paginate="$this->issues">
             <flux:table.columns>

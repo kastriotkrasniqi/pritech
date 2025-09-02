@@ -25,6 +25,11 @@ final class Table extends Component
 
     public $selectedTagId;
 
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
+    }
+
     public function confirmDelete($id): void
     {
         $this->selectedTagId = $id;
@@ -69,6 +74,8 @@ final class Table extends Component
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
-        return view('livewire.tags.table');
+        return view('livewire.tags.table', [
+            'perPageOptions' => [5, 10, 25, 50, 100],
+        ]);
     }
 }

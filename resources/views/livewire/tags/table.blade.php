@@ -9,10 +9,9 @@
             <flux:input size="sm" wire:model.live.debounce.300ms="search" class="w-full sm:w-64" placeholder="Search tags...">
             </flux:input>
             <flux:select size="sm" wire:model.live="perPage" class="w-full sm:w-32">
-                <flux:select.option value="5">5 per page</flux:select.option>
-                <flux:select.option value="10">10 per page</flux:select.option>
-                <flux:select.option value="25">25 per page</flux:select.option>
-                <flux:select.option value="50">50 per page</flux:select.option>
+                @foreach($perPageOptions as $option)
+                <flux:select.option value="{{ $option }}">{{ $option }} per page</flux:select.option>
+                @endforeach
             </flux:select>
         </div>
         <flux:table :paginate="$this->tags">

@@ -10,9 +10,9 @@
                 placeholder="Search...">
             </flux:input>
             <flux:select size="sm" wire:model.live="perPage" class="w-full sm:w-32" placeholder="Choose per page...">
-                <flux:select.option value="5">5</flux:select.option>
-                <flux:select.option value="10">10</flux:select.option>
-                <flux:select.option value="25">25</flux:select.option>
+                @foreach($perPageOptions as $option)
+                <flux:select.option value="{{ $option }}">{{ $option }}</flux:select.option>
+                @endforeach
             </flux:select>
         </div>
         <flux:table :paginate="$this->projects">
