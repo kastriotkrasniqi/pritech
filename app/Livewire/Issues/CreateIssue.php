@@ -7,7 +7,6 @@ namespace App\Livewire\Issues;
 use App\Enums\IssuePriority;
 use App\Enums\IssueStatus;
 use App\Livewire\Forms\IssueForm;
-use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Tag;
 use App\Models\User;
@@ -23,8 +22,6 @@ final class CreateIssue extends Component
     public function render()
     {
         return view('livewire.issues.create-issue', [
-            'tags' => Tag::all(['id','name','color']),
-            'members' => User::all(['id','name']),
             'statuses' => IssueStatus::all(),
             'priorities' => IssuePriority::all(),
         ]);
@@ -32,14 +29,7 @@ final class CreateIssue extends Component
 
     public function save(): void
     {
-        $this->validate();
-
-        $issue = Issue::create($this->form->forModel());
-
-        $issue->tags()->sync($this->form->tags);
-        $issue->members()->sync($this->form->members);
-
-        $this->form->reset();
+        $issue = $this->form->save();
 
         Flux::modal('create-issue')->close();
         $this->dispatch('issue-created');
@@ -49,9 +39,18 @@ final class CreateIssue extends Component
     #[\Livewire\Attributes\Computed]
     public function projects()
     {
-        return Project::query()
-            ->when($this->searchProject, fn ($query) => $query->where('name', 'like', '%'.$this->searchProject.'%'))
-            ->limit(5)
-            ->get();
+        return Project::when($this->searchProject, fn ($q) => $q->where('name', 'like', "%{$this->searchProject}%"))->limit(5)->get();
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function tags()
+    {
+        return Tag::select('id', 'name', 'color')->get();
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function users()
+    {
+        return User::select('id', 'name')->get();
     }
 }

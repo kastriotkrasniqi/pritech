@@ -17,6 +17,21 @@ final class Comment extends Model
         'user_id',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    public function canBeEditedBy(User $user): bool
+    {
+        return $this->user_id === $user->id;
+    }
+
+    public function canBeDeletedBy(User $user): bool
+    {
+        return $this->canBeEditedBy($user) || $this->issue->project->user_id === $user->id;
+    }
+
     public function issue()
     {
         return $this->belongsTo(Issue::class);

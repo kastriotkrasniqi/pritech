@@ -54,14 +54,15 @@ final class Table extends Component
             $this->sortBy = $column;
             $this->sortDirection = 'asc';
         }
+        $this->resetPage();
     }
 
     #[On('tag-created')]
+    #[On('tag-deleted')]
     #[\Livewire\Attributes\Computed]
     public function tags()
     {
-        return Tag::query()
-            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+        return Tag::when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
     }

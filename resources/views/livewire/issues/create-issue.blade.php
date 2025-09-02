@@ -41,7 +41,7 @@
             </flux:field>
             <flux:field class="mb-4">
                 <flux:select wire:model="form.tags" label="Tags"  variant="listbox" multiple placeholder="Select tags...">
-                    @foreach($tags as $tag)
+                    @foreach($this->tags as $tag)
                         <flux:select.option value="{{ $tag->id }}">{{ $tag->name }}</flux:select.option>
                     @endforeach
                 </flux:select>
@@ -49,7 +49,7 @@
 
              <flux:field class="mb-4">
                 <flux:select wire:model="form.members" label="Members"  variant="listbox" multiple placeholder="Select members..." searchable>
-                    @foreach($members as $user)
+                    @foreach($this->users as $user)
                         <flux:select.option value="{{ $user->id }}">{{ $user->name }}</flux:select.option>
                     @endforeach
                 </flux:select>

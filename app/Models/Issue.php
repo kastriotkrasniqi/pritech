@@ -22,6 +22,10 @@ final class Issue extends Model
         'due_date',
     ];
 
+    protected $casts = [
+        'due_date' => 'datetime',
+    ];
+
     public static function statusOptions(): array
     {
         return IssueStatus::all();

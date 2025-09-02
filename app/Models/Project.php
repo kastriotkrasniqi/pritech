@@ -20,8 +20,8 @@ final class Project extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'deadline' => 'date',
+        'start_date' => 'datetime',
+        'deadline' => 'datetime',
     ];
 
     public function issues()

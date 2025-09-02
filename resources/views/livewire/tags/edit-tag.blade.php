@@ -31,17 +31,16 @@
 
         @if($isEditing)
         <form wire:submit.prevent="save" class="space-y-6">
-            @csrf
             <flux:field class="mb-4">
-                <flux:input label="Name" wire:model="name" />
-                @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                <flux:input label="Name" wire:model="name" placeholder="Enter tag name..." />
+                <flux:error name="name" />
             </flux:field>
 
             <flux:field class="mb-4">
                 <label class="block text-sm font-medium mb-1">Color</label>
-                <input type="color" wire:model="color" class="flux-input w-16 h-8 p-0 border-none">
-                <span class="ml-2 text-xs">{{ $color }}</span>
-                @error('color') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                <input type="color" wire:model="color" class="flux-input w-16 h-8 p-0 border-none rounded">
+                <span class="ml-2 text-xs font-mono">{{ $color }}</span>
+                <flux:error name="color" />
             </flux:field>
 
             <div class="flex gap-2">
@@ -52,14 +51,18 @@
         </form>
         @else
 
-        <div class="mb-4">
-            <span class="block text-sm font-medium mb-1">Name</span>
-            <span class="text-lg">{{ $tag->name }}</span>
-        </div>
-        <div class="mb-4">
-            <span class="block text-sm font-medium mb-1">Color</span>
-            <span class="inline-block w-6 h-6 rounded align-middle" style="background: {{ $tag->color }};"></span>
-            <span class="ml-2 text-xs">{{ $tag->color }}</span>
+        <div class="space-y-4">
+            <div>
+                <span class="block text-sm font-medium mb-1">Name</span>
+                <span class="text-lg">{{ $tag->name }}</span>
+            </div>
+            <div>
+                <span class="block text-sm font-medium mb-1">Color</span>
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-6 h-6 rounded border" style="background: {{ $tag->color }};"></span>
+                    <span class="text-xs font-mono">{{ $tag->color }}</span>
+                </div>
+            </div>
         </div>
         @endif
     </div>

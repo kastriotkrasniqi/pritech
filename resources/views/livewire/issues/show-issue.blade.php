@@ -76,8 +76,7 @@
                     </flux:select>
                 </flux:field>
                 @else
-                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg
-                    >
+                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Status</p>
                     <p class="text-gray-900 dark:text-white font-medium">
                         {{ ucfirst(str_replace('_', ' ', $issue->status)) }}
@@ -95,16 +94,16 @@
 
     <!-- Issue Details -->
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center ">
-                @if($isEditing)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            @if($isEditing)
                 <div class="flex flex-col justify-center h-full">
                     <flux:field>
-                    <flux:select wire:model="form.project_id" label="Project" variant="listbox"  placeholder="Select project..." searchable>
-                        @foreach($this->projects as $project)
-                            <flux:select.option value="{{ $project->id }}">{{ ucfirst($project->name) }}</flux:select.option>
-                        @endforeach
-                    </flux:select>
-                </flux:field>
+                        <flux:select wire:model="form.project_id" label="Project" variant="listbox" placeholder="Select project..." searchable>
+                            @foreach($this->projects as $project)
+                                <flux:select.option value="{{ $project->id }}">{{ ucfirst($project->name) }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                    </flux:field>
                 </div>
                 <div class="flex flex-col justify-center h-full">
                     <flux:field>
@@ -112,18 +111,18 @@
                     </flux:field>
                 </div>
             @else
-            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Project</p>
-                <p class="text-gray-900 dark:text-white font-medium">
-                    {{ $issue->project?->name ?? 'Not set' }}
-                </p>
-            </div>
-            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Due Date</p>
-                <p class="text-gray-900 dark:text-white font-medium">
-                    {{ $issue->due_date ?? 'Not set' }}
-                </p>
-            </div>
+                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Project</p>
+                    <p class="text-gray-900 dark:text-white font-medium">
+                        {{ $issue->project?->name ?? 'Not set' }}
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Due Date</p>
+                    <p class="text-gray-900 dark:text-white font-medium">
+                        {{ $issue->due_date ?? 'Not set' }}
+                    </p>
+                </div>
             @endif
         </div>
     </div>
@@ -132,23 +131,21 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Tags</h3>
-
         </div>
         @if($isEditing)
-        <flux:field>
-            <flux:select wire:model="form.tags" label="Tags" variant="listbox" placeholder="Select tags..." searchable multiple >
-                @foreach($this->tags as $tag)
-                    <flux:select.option value="{{ $tag->id }}">{{ $tag->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
-        </flux:field>
+            <flux:field>
+                <flux:select wire:model="form.tags" label="Tags" variant="listbox" placeholder="Select tags..." searchable multiple>
+                    @foreach($this->tags as $tag)
+                        <flux:select.option value="{{ $tag->id }}">{{ $tag->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            </flux:field>
         @else
-        <div class="flex flex-wrap gap-2">
-            @foreach($issue->tags as $tag)
-            <flux:badge size="xs" :style="'background-color: ' . $tag->color . '; color: #fff;'">{{ $tag->name }}
-            </flux:badge>
-            @endforeach
-        </div>
+            <div class="flex flex-wrap gap-2">
+                @foreach($issue->tags as $tag)
+                    <flux:badge size="xs" :style="'background-color: ' . $tag->color . '; color: #fff;'">{{ $tag->name }}</flux:badge>
+                @endforeach
+            </div>
         @endif
     </div>
     <!-- Members -->
@@ -157,32 +154,32 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Members</h3>
         </div>
         @if($isEditing)
-        <flux:field>
-            <flux:select wire:model="form.members" label="Members" variant="listbox" placeholder="Assign members..." searchable multiple>
-                @foreach(App\Models\User::all() as $user)
-                    <flux:select.option value="{{ $user->id }}">{{ $user->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
-        </flux:field>
+            <flux:field>
+                <flux:select wire:model="form.members" label="Members" variant="listbox" placeholder="Assign members..." searchable multiple>
+                    @foreach($this->users as $user)
+                        <flux:select.option value="{{ $user->id }}">{{ $user->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            </flux:field>
         @else
-        <div class="flex flex-wrap gap-2">
-            @forelse($issue->members as $user)
-                <flux:badge size="sm" color="gray">{{ $user->name }}</flux:badge>
-            @empty
-                <span class="text-xs text-gray-500">No members assigned.</span>
-            @endforelse
-        </div>
+            <div class="flex flex-wrap gap-2">
+                @forelse($issue->members as $user)
+                    <flux:badge size="sm" color="gray">{{ $user->name }}</flux:badge>
+                @empty
+                    <span class="text-xs text-gray-500">No members assigned.</span>
+                @endforelse
+            </div>
         @endif
     </div>
     <!-- Actions -->
     @if($isEditing)
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h3>
-        <div class="flex gap-3">
-            <flux:button wire:click="save" class="flex-1">Save Changes</flux:button>
-            <flux:button wire:click="toggleEdit" variant="ghost" class="flex-1">Cancel</flux:button>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h3>
+            <div class="flex gap-3">
+                <flux:button wire:click="save" class="flex-1">Save Changes</flux:button>
+                <flux:button wire:click="toggleEdit" variant="ghost" class="flex-1">Cancel</flux:button>
+            </div>
         </div>
-    </div>
     @endif
 
 

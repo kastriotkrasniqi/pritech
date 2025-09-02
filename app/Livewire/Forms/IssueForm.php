@@ -5,64 +5,94 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Models\Issue;
+use Livewire\Attributes\Validate;
 use Livewire\Form;
 
 final class IssueForm extends Form
 {
     public ?Issue $issue = null;
 
+    #[Validate(['required', 'string', 'max:255'])]
     public $title = '';
+
+    #[Validate(['nullable', 'string'])]
     public $description = '';
+
+    #[Validate(['required', 'string'])]
     public $status = '';
+
+    #[Validate(['required', 'string'])]
     public $priority = '';
+
+    #[Validate(['nullable', 'date'])]
     public $due_date;
+
+    #[Validate(['required', 'exists:projects,id'])]
     public $project_id;
 
     // relationships
+    #[Validate(['array'])]
+    #[Validate(['exists:tags,id'], 'tags.*')]
     public $tags = [];
+
+    #[Validate(['array'])]
+    #[Validate(['exists:users,id'], 'members.*')]
     public $members = [];
 
-    public function modelAttributes(): array
+    public function forModel(): array
     {
-        return [
+        return $this->only([
             'project_id',
             'title',
             'description',
             'status',
             'priority',
             'due_date',
-        ];
-    }
-
-
-    public function forModel(): array
-    {
-        return $this->only($this->modelAttributes());
+        ]);
     }
 
     public function setIssue(?Issue $issue): void
     {
         $this->issue = $issue;
+        $this->refreshFromModel();
+    }
 
-        if ($issue instanceof Issue) {
-            $this->tags = $issue->tags->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
-            $this->members = $issue->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
+    public function loadRelationships(): void
+    {
+        if ($this->issue) {
+            $this->tags = $this->issue->tags()->pluck('tags.id')->toArray();
+            $this->members = $this->issue->members()->pluck('users.id')->toArray();
         }
     }
 
-    public function rules(): array
+    public function syncRelationships(): void
     {
-        return [
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', 'string'],
-            'priority' => ['required', 'string'],
-            'due_date' => ['nullable', 'date'],
-            'project_id' => ['required', 'exists:projects,id'],
-            'tags' => ['array'],
-            'tags.*' => ['exists:tags,id'],
-            'members' => ['array'],
-            'members.*' => ['exists:users,id'],
-        ];
+        if ($this->issue) {
+            $this->issue->tags()->sync($this->tags);
+            $this->issue->members()->sync($this->members);
+        }
+    }
+
+    public function save(): Issue
+    {
+        $this->validate();
+
+        $this->issue
+            ? $this->issue->update($this->forModel())
+            : $this->issue = Issue::create($this->forModel());
+
+        $this->syncRelationships();
+
+        return $this->issue;
+    }
+
+    public function refreshFromModel(): void
+    {
+        if ($this->issue) {
+            $this->fill($this->issue->toArray());
+            $this->loadRelationships();
+        } else {
+            $this->reset();
+        }
     }
 }

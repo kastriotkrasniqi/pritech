@@ -10,6 +10,7 @@ use App\Livewire\Forms\IssueForm;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Tag;
+use Flux\Flux;
 use Livewire\Component;
 
 final class ShowIssue extends Component
@@ -25,45 +26,42 @@ final class ShowIssue extends Component
 
     public function mount(Issue $issue): void
     {
-    $this->issue = $issue;
-    $this->form->fill($issue->toArray());
-    $this->form->tags = $issue->tags->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
-    $this->form->project_id = $issue->project_id;
-    $this->form->members = $issue->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
+        $this->issue = $issue;
+        $this->form->setIssue($issue);
     }
 
     public function toggleEdit(): void
     {
         $this->isEditing = ! $this->isEditing;
         if ($this->isEditing) {
-            $this->form->fill($this->issue->toArray());
-            $this->form->members = $this->issue->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
+            $this->form->refreshFromModel();
         }
     }
 
     public function save(): void
     {
-    $this->validate();
-    $this->issue->update($this->form->forModel());
-    $this->issue->tags()->sync($this->form->tags);
-    $this->issue->members()->sync($this->form->members);
-    $this->isEditing = false;
-    $this->form->fill($this->issue->fresh()->toArray());
-    $this->form->members = $this->issue->fresh()->members->pluck('id')->map(fn ($id): int => (int) $id)->toArray();
+        $this->form->save();
+        $this->issue->load(['tags', 'members']);
+        $this->isEditing = false;
+        Flux::toast(variant: 'success', text: 'Issue updated successfully!');
     }
 
     #[\Livewire\Attributes\Computed]
     public function tags()
     {
-        return Tag::query()
-            ->when($this->searchTag, fn ($query) => $query->where('name', 'like', '%'.$this->searchTag.'%'))
-            ->get();
+        return Tag::when($this->searchTag, fn ($q) => $q->where('name', 'like', "%{$this->searchTag}%"))->get();
     }
 
     #[\Livewire\Attributes\Computed]
     public function projects()
     {
-        return Project::query()->get(['id', 'name']);
+        return Project::select('id', 'name')->get();
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function users()
+    {
+        return \App\Models\User::select('id', 'name')->get();
     }
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory

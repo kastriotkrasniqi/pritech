@@ -53,16 +53,8 @@ final class ShowProject extends Component
     {
         $this->validate();
 
-        // Additional validation for deadline
-        if ($this->form->start_date && $this->form->deadline && $this->form->deadline < $this->form->start_date) {
-            Flux::toast(variant: 'danger', text: 'Deadline cannot be before start date!');
-
-            return;
-        }
-
         $this->project->update($this->form->all());
-        $this->project->refresh();
-
+        $this->project->load('owner');
         $this->isEditing = false;
         Flux::toast(variant: 'success', text: 'Project updated successfully!');
     }
@@ -122,9 +114,12 @@ final class ShowProject extends Component
             ->get();
     }
 
-        #[\Livewire\Attributes\Computed]
-        public function issues()
-        {
-            return $this->project->issues()->orderByDesc('created_at')->paginate(5);
-        }
+    #[\Livewire\Attributes\Computed]
+    public function issues()
+    {
+        return $this->project->issues()
+            ->with(['tags', 'members'])
+            ->orderByDesc('created_at')
+            ->paginate(5);
+    }
 }

@@ -22,13 +22,11 @@ final class CreateProject extends Component
 
     public function save(): void
     {
-        $this->validate();
-        Project::create($this->form->all());
-        $this->reset();
+        $this->form->save();
+        $this->form->reset();
         Flux::modal('create-project')->close();
         $this->dispatch('project-created');
         Flux::toast(variant: 'success', text: 'Project created successfully!');
-
     }
 
     #[\Livewire\Attributes\Computed]

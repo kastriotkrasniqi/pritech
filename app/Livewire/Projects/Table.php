@@ -52,8 +52,8 @@ final class Table extends Component
     #[\Livewire\Attributes\Computed]
     public function projects()
     {
-
         return Project::query()
+            ->with(['owner'])
             ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
             ->when($this->search, function ($query): void {
                 $query->where(function ($q): void {

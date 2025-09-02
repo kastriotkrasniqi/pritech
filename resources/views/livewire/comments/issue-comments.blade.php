@@ -19,7 +19,8 @@
                         {{-- ✅ Edit mode --}}
                         @if($editingCommentId === $comment->id)
                             <div class="mt-2">
-                                <flux:textarea wire:model.defer="editingCommentBody" rows="2" />
+                                <flux:textarea wire:model.defer="form.body" rows="2" />
+                                <flux:error name="form.body" />
                                 <div class="flex gap-2 mt-2">
                                     <flux:button size="xs" wire:click="updateComment">Save</flux:button>
                                     <flux:button size="xs" variant="subtle" wire:click="cancelEditComment">Cancel</flux:button>
@@ -33,7 +34,7 @@
                         <div class="flex items-center gap-1 mt-1">
                             @php
                                 $liked = auth()->check() && $comment->liked(auth()->user());
-                                $canEditDelete = auth()->check() && (auth()->id() === $comment->user_id || auth()->id() === ($comment->issue->project->owner_id ?? null));
+                                $canEditDelete = auth()->check() && (auth()->id() === $comment->user_id || auth()->id() === ($comment->issue->project->user_id ?? null));
                             @endphp
                             <flux:button wire:click="toggleLike({{ $comment->id }})" variant="ghost" size="xs">
                                 <div class="flex items-center gap-1">
@@ -68,7 +69,7 @@
             <form wire:submit.prevent="addComment" class="flex flex-col gap-3">
                 <flux:field>
                     <flux:textarea wire:model.defer="newComment" rows="2" placeholder="Add a comment..." />
-                      <flux:error name="newComment" />
+                    <flux:error name="newComment" />
                 </flux:field>
                 <div class="flex justify-end">
                     <flux:button type="submit" size="sm">Post Comment</flux:button>

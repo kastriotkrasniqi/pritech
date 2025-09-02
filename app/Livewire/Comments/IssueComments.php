@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Comments;
 
+use App\Livewire\Forms\CommentForm;
 use App\Models\Comment;
 use App\Models\Issue;
 use Flux\Flux;
@@ -16,11 +17,11 @@ final class IssueComments extends Component
 
     public Issue $issue;
 
-    public $newComment = '';
+    public CommentForm $form;
 
     public $editingCommentId;
 
-    public $editingCommentBody = '';
+    public $newComment = '';
 
     public function mount(Issue $issue): void
     {
@@ -33,7 +34,10 @@ final class IssueComments extends Component
     #[\Livewire\Attributes\Computed]
     public function comments()
     {
-        return $this->issue->comments()->with('user')->latest()->paginate(4);
+        return $this->issue->comments()
+            ->with(['user', 'issue'])
+            ->latest()
+            ->paginate(4);
     }
 
     public function addComment(): void
@@ -55,32 +59,30 @@ final class IssueComments extends Component
     public function editComment($id): void
     {
         $comment = Comment::find($id);
+
         if ($comment && $comment->user_id === auth()->id()) {
+            $this->form->setComment($comment);
             $this->editingCommentId = $id;
-            $this->editingCommentBody = $comment->body;
         }
     }
 
     public function updateComment(): void
     {
-        $this->validate([
-            'editingCommentBody' => 'required|string|max:1000',
-        ]);
-
         $comment = Comment::find($this->editingCommentId);
 
         if ($comment && $comment->user_id === auth()->id()) {
-            $comment->update([
-                'body' => $this->editingCommentBody,
-            ]);
-            $this->reset(['editingCommentId', 'editingCommentBody']);
+            $this->form->comment = $comment;
+            $this->form->save($this->issue->id);
+            $this->reset(['editingCommentId']);
+            $this->form->reset();
             Flux::toast(variant: 'success', text: 'Comment updated successfully!');
         }
     }
 
     public function cancelEditComment(): void
     {
-        $this->reset(['editingCommentId', 'editingCommentBody']);
+        $this->reset(['editingCommentId']);
+        $this->form->reset();
     }
 
     public function deleteComment($id): void
@@ -91,21 +93,20 @@ final class IssueComments extends Component
         if ($comment && (auth()->id() === $comment->user_id || auth()->id() === $projectOwnerId)) {
             $comment->delete();
             Flux::toast(variant: 'danger', text: 'Comment deleted successfully!');
-            // $this->resetPage();
         }
     }
 
     public function toggleLike($commentId): void
     {
-        $comment = $this->comments->firstWhere('id', $commentId);
+        $comment = Comment::find($commentId);
         $user = auth()->user();
+
         if ($comment && $user) {
             if ($comment->liked($user)) {
                 $comment->unlike($user);
             } else {
                 $comment->like($user);
             }
-            $this->dispatch('$refresh');
         }
     }
 

@@ -9,21 +9,24 @@ use Livewire\Component;
 
 final class Board extends Component
 {
+    private const STATUSES = ['open', 'in_progress', 'closed'];
+
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
-        $statuses = ['open', 'in_progress', 'closed'];
-        $issues = [];
-        foreach ($statuses as $status) {
-            $issues[$status] = Issue::with('project', 'tags')
-                ->where('status', $status)
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get();
-        }
+        $statuses = self::STATUSES;
 
-        return view('livewire.issues.board', [
-            'issues' => $issues,
-            'statuses' => $statuses,
+        // Single query with eager loading for better performance
+        $allIssues = Issue::with(['project', 'tags'])
+            ->whereIn('status', $statuses)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('status');
+
+        // Ensure all status keys exist
+        $issues = collect($statuses)->mapWithKeys(fn ($status) => [
+            $status => $allIssues->get($status, collect())->take(10)
         ]);
+
+        return view('livewire.issues.board', compact('issues', 'statuses'));
     }
 }
